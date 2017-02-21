@@ -1,0 +1,7 @@
+/.idea/
+/examples/webserver.log
+/cache/
+/examples/websocket.log
+/logs/
+*.pid
+/uploads
