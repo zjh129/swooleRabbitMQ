@@ -31,7 +31,7 @@ function process_message($message)
     }
 }
 
-$channel->basic_consume($queue, $consumerTag, false, false, false, false, 'process_,essage');
+$channel->basic_consume($queue, $consumerTag, false, false, false, false, 'process_message');
 
 /**
  * @param \PhpAmqpLib\Channel\AMQPChannel $channel
