@@ -1,6 +1,6 @@
 <?php
 require_once __DIR__ . '/../vendor/autoload.php';
-define('HOST', 'my-rabbit');
+define('HOST', '172.17.0.2');
 define('PORT', 5672);
 define('USER', 'guest');
 define('PASS', 'guest');
