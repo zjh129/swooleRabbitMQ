@@ -5,3 +5,4 @@
 /logs/
 *.pid
 /uploads
+.php_cs.cache

@@ -26,7 +26,7 @@ function process_message($message)
 
     $message->delivery_info['channel']->basic_ack($message->delivery_info['delivery_tag']);
 
-    if ($message->body === 'quit'){
+    if ($message->body === 'quit') {
         $message->delivery_info['channel']->basic_cancel($message->delivery_info['consumer_tag']);
     }
 }
@@ -45,6 +45,6 @@ function shutdown($channel, $connection)
 
 register_shutdown_function('shutdown', $channel, $connection);
 
-while (count($channel->callbacks)){
+while (count($channel->callbacks)) {
     $channel->wait();
 }
