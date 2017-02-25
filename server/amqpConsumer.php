@@ -1,7 +1,7 @@
 <?php
 include(__DIR__.'/config.php');
 use PhpAmqpLib\Connection\AMQPStreamConnection;
-
+//消费者
 $exchange = 'router';
 $queue = 'msgs';
 $consumerTag = 'consumer';

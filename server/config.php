@@ -6,4 +6,4 @@ define('USER', 'guest');
 define('PASS', 'guest');
 define('VHOST', '/');
 //If this is enabled you can see AMQP output on the CLI
-define('AMQP_DEBUG', true);
+define('AMQP_DEBUG', false);//是否开启调试模式
