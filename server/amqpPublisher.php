@@ -4,7 +4,9 @@ include(__DIR__ . '/config.php');
 use PhpAmqpLib\Connection\AMQPStreamConnection;
 use PhpAmqpLib\Message\AMQPMessage;
 
+//交换器名称
 $exchange = 'router';
+//队列名称
 $queue = 'msgs';
 //创建连接
 $connection = new AMQPStreamConnection(HOST, PORT, USER, PASS, VHOST);
@@ -21,10 +23,14 @@ $channel->exchange_declare($exchange, 'direct', false, true, false);
 $channel->queue_bind($queue, $exchange);
 
 for ($i = 1; $i <= 100; $i++){
+    //截取脚本参数部分合并组成消息内容
     $messageBody = implode(' ', array_slice($argv, 1)) . $i;
+    //创建一个消息实体
     $message = new AMQPMessage($messageBody, ['content_type'=>'text/plain', 'devlivery_mode' => AMQPMessage::DELIVERY_MODE_PERSISTENT]);
+    //发送消息到队列
     $channel->basic_publish($message, $exchange);
 }
-
+//关闭通道
 $channel->close();
+//关闭连接
 $connection->close();
