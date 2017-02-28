@@ -22,9 +22,9 @@ $channel->exchange_declare($exchange, 'direct', false, true, false);
 //绑定队列和交换机
 $channel->queue_bind($queue, $exchange);
 
-for ($i = 1; $i <= 100; $i++){
+for ($i = 1; $i <= 10000; $i++){
     //截取脚本参数部分合并组成消息内容
-    $messageBody = implode(' ', array_slice($argv, 1)) . $i;
+    $messageBody = implode(' ', array_slice($argv, 1)) . microtime(true);
     //创建一个消息实体
     $message = new AMQPMessage($messageBody, ['content_type'=>'text/plain', 'devlivery_mode' => AMQPMessage::DELIVERY_MODE_PERSISTENT]);
     //发送消息到队列
