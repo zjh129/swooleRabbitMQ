@@ -46,6 +46,7 @@ class QueueServer extends \Swoole\Protocol\Base
             } catch (Exception $e) {
                 $this->log($e->getCode().':'.$e->getMessage());
             }
+
         }
     }
 
