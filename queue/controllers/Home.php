@@ -16,4 +16,10 @@ class Home extends Swoole\Controller
     {
         return time()."\n";
     }
+    public function time()
+    {
+        var_dump($this->request);
+        return 0;
+        return date("Y-m-d H:i:s")."\n";
+    }
 }
