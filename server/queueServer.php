@@ -37,13 +37,15 @@ class QueueServer extends \Swoole\Protocol\Base
     {
         //循环次数
         $this->queueData = $this->queueDriver->pop();
-        try {
-            $this->checkQueueData($this->queueData);
-            Swoole::$php->router([$this, 'router']);
-            Swoole::$php->request = $this->queueData['recData'];
-            Swoole::$php->runMVC();
-        } catch (Exception $e) {
-            $this->log($e->getCode().':'.$e->getMessage());
+        if ($this->queueData){
+            try {
+                $this->checkQueueData($this->queueData);
+                Swoole::$php->router([$this, 'router']);
+                Swoole::$php->request = $this->queueData['recData'];
+                Swoole::$php->runMVC();
+            } catch (Exception $e) {
+                $this->log($e->getCode().':'.$e->getMessage());
+            }
         }
     }
 
