@@ -2,18 +2,20 @@
 class QueueClient
 {
     private $client;
+    private $isConnect;
     public function __construct()
     {
         $this->client = new swoole_client(SWOOLE_SOCK_TCP);
 
     }
+
+    /**
+     * 连接
+     */
     public function connect()
     {
-        try{
-            $this->client->connect('127.0.0.1', 9443, 1);
-        }catch (Exception $e){
-            echo $e->getCode().':'.$e->getMessage();
-            exit();
+        if ($this->client->connect('127.0.0.1', 9443, 1)){
+            $this->isConnect = true;
         }
     }
     public function send($data)
@@ -28,7 +30,6 @@ class QueueClient
         ];
         $jsonData = json_encode($data);
         $this->client->send($jsonData);
-        //echo $this->client->recv();
     }
     public function close()
     {
@@ -37,7 +38,8 @@ class QueueClient
 }
 $client = new QueueClient();
 $client->connect();
-for ($i=0;$i<1000;$i++){
+for ($i=0;$i<100;$i++){
     $client->send($i);
+    usleep(1000);
 }
 $client->close();

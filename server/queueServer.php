@@ -36,6 +36,13 @@ class QueueServer extends \Swoole\Protocol\Base
      */
     protected function checkQueueData($queueData)
     {
+        if (!$queueData['queueName'])
+        {
+            throw new Exception('请提供队列名称', 1001);
+        }
+        if (strpos($queueData['queueName'], '/' ) <= 0){
+            throw new Exception('队列格式错误', 1002);
+        }
         return true;
     }
 
@@ -45,7 +52,7 @@ class QueueServer extends \Swoole\Protocol\Base
      */
     public function router()
     {
-        if (isset($this->queueName) && strpos($this->queueName, '/' ) !== false){
+        if (isset($this->queueName)){
             $urlParam = explode('/', $this->queueName);
             return ['controller' => $urlParam[0], 'view' => $urlParam[1]];
         }else{
@@ -62,14 +69,13 @@ class QueueServer extends \Swoole\Protocol\Base
     public function onReceive($server, $client_id, $from_id, $data)
     {
         $receiveData = json_decode($data, true);
-        /*var_dump($receiveData);
-        echo "\n";*/
         try {
             $this->checkQueueData($receiveData);
             $this->server->task($receiveData);
             //$this->server->finish(['code' => 1000, 'msg'=>'操作成功']);
         } catch (\Exception $e) {
-            $this->server->finish(['code'=>$e->getCode(),'msg'=>$e->getMessage()]);
+            echo 'code:'.$e->getCode().',msg:'.$e->getMessage().PHP_EOL;
+            //$this->server->finish(['code'=>$e->getCode(),'msg'=>$e->getMessage()]);
         }
     }
 
@@ -82,15 +88,13 @@ class QueueServer extends \Swoole\Protocol\Base
      */
     public function onTask($server, $taskId, $fromId, $data)
     {
-        var_dump($data);
-        echo "\n";
         try {
             $this->checkQueueData($data);
             $this->queueName = $data['queueName'];
             Swoole::$php->router([$this, 'router']);
             Swoole::$php->request = $data['recData'];
-            $rs = Swoole::$php->runMVC();
-            $this->server->finish("处理完成 -> OK");
+            Swoole::$php->runMVC();
+            $this->server->finish("执行成功");
         } catch (Exception $e) {
             $this->log($e->getCode().':'.$e->getMessage());
         }
@@ -104,7 +108,7 @@ class QueueServer extends \Swoole\Protocol\Base
      */
     public function onFinish($server, $taskId, $data)
     {
-        echo "AsyncTask[$taskId] Finish:" . PHP_EOL;
+        echo "AsyncTask[$data] Finish:" . PHP_EOL;
     }
 }
 //设置PID文件的存储路径
@@ -133,6 +137,5 @@ Swoole\Network\Server::start(function ($options) {
         'worker_num' => 100,
         'max_request' => 1,
         'ipc_mode' => 2,
-        'task_worker_num' => 100,
     ]);
 });

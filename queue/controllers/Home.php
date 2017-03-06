@@ -14,12 +14,10 @@ class Home extends Swoole\Controller
 
     public function index()
     {
-        return time()."\n";
+        return __METHOD__.PHP_EOL;
     }
     public function time()
     {
-        var_dump($this->request);
-        return 0;
-        return date("Y-m-d H:i:s")."\n";
+        return __METHOD__.PHP_EOL;
     }
 }
